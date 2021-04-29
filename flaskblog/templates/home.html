@@ -16,7 +16,7 @@
             <div class="d-flex flex-row fs-11 mt-2">
             {% if current_user.is_authenticated %}
             {% if current_user.has_liked_post(post) %}
-              <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}"><i class="fa fa-thumbs-o-down"></i><span class="ml-1">Unlike</span></a>
+              <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}"><i class="fa fa-heart"></i><span class="ml-1">Unlike</span></a>
             {% else %}
               <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}"><i class="fa fa-heart-o"></i><span class="ml-1">Like</span></a>
             {% endif %}

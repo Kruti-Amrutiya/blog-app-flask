@@ -26,6 +26,7 @@ def new_post():
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     form = AddCommentForm()
+    # post.comments.count()
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, article=post, user=current_user)
         db.session.add(comment)
@@ -34,8 +35,7 @@ def post(post_id):
         return redirect(url_for("posts.post", post_id=post.id))
     num = post_id
     comments = db.session.query(Comment).filter(Comment.post_id == num).all()
-    comment_len = len(comments)
-    return render_template('post.html', title=post.title, post=post, form=form, comments=comments, comment_len=comment_len)
+    return render_template('post.html', title=post.title, post=post, form=form, comments=comments)
 
 
 @posts.route("/post/<int:post_id>/update", methods=['GET', 'POST'])

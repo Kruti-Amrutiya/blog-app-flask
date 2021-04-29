@@ -18,9 +18,9 @@
 	  <div class="d-flex flex-row fs-11 mt-2">
 		{% if current_user.is_authenticated %}
 		{% if current_user.has_liked_post(post) %}
-		  <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}"><i class="fa fa-heart-o"></i><span class="ml-1">Unlike</span></a>
+		  <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}"><i class="fa fa-heart"></i><span class="ml-1">Unlike</span></a>
 		{% else %}
-		  <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}"><i class="fa fa-heart"></i><span class="ml-1">Like</span></a>
+		  <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}"><i class="fa fa-heart-o"></i><span class="ml-1">Like</span></a>
 		{% endif %}
 		{% endif %}
 		<div class="like p-1 cursor mr-2">{{ post.likes.count() }} likes</div>
@@ -33,7 +33,6 @@
       <fieldset class="form-group">
           <legend class="border-bottom mb-4">Comment</legend>
           <div class="form-group">
-              {{ form.body.label(class="form-control-label") }}
               {% if form.body.errors %}
                   {{ form.body(class="form-control form-control-lg is-invalid") }}
                   <div class="invalid-feedback">
