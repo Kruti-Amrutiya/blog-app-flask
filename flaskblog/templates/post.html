@@ -15,8 +15,55 @@
       </div>
       <h2 class="article-title">{{ post.title }}</h2>
       <p class="article-content">{{ post.content }}</p>
+	  <div class="d-flex flex-row fs-11 mt-2">
+		{% if current_user.is_authenticated %}
+		{% if current_user.has_liked_post(post) %}
+		  <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}"><i class="fa fa-thumbs-o-down"></i><span class="ml-1">Unlike</span></a>
+		{% else %}
+		  <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}"><i class="fa fa-heart-o"></i><span class="ml-1">Like</span></a>
+		{% endif %}
+		{% endif %}
+		<div class="like p-1 cursor mr-2">{{ post.likes.count() }} likes</div>
+		</div>
     </div>
   </article>
+  <div class="content-section">
+    <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Comment</legend>
+          <div class="form-group">
+              {{ form.body.label(class="form-control-label") }}
+              {% if form.body.errors %}
+                  {{ form.body(class="form-control form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in form.body.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+              {% else %}
+                  {{ form.body(class="form-control form-control-l") }}
+              {% endif %}
+          </div>
+      </fieldset>
+      <div class="form-group">
+          {{ form.submit(class="btn btn-outline-info") }}
+      </div>
+  </form>
+  </div>
+  <legend class="border-bottom mb-4">All Comments</legend>
+  {% for comment in comments %}
+  <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + comment.user.image_file) }}">
+    <div class="media-body">
+      <div class="article-metadata pt-4">
+        <a class="mr-2" href="{{ url_for('users.user_posts', username=comment.user.username) }}">{{ comment.user.username }}</a>
+        <h5 id="user-comment" class="media-body">{{ comment.body }}</h5>
+        <small class="text-muted">{{ comment.created_date }}</small>
+      </div>
+    </div>
+  </article>
+  {% endfor %}
   <!-- Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
