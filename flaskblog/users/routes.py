@@ -66,6 +66,12 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
+@users.route("/profile_details")
+@login_required
+def profile_details():
+    return render_template('profile_details.html', title='Profile Details')
+
+
 @users.route("/user/<string:username>")
 def user_posts(username):
     page = request.args.get('page', 1, type=int)
