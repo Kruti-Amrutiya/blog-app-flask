@@ -22,10 +22,10 @@
 							{% endfor %}
 						</div>
 					{% else %}
-						{{ form.username(class="form-control form-control-l") }}
+						{{ form.username(class="form-control form-control-lg") }}
 					{% endif %}
 				</div>
-				<div class="form-group pt-4">
+				<div class="form-group">
 					{{ form.email.label(class="form-control-label") }}
 					{% if form.email.errors %}
 						{{ form.email(class="form-control form-control-lg is-invalid") }}
@@ -35,10 +35,10 @@
 							{% endfor %}
 						</div>
 					{% else %}
-						{{ form.email(class="form-control form-control-l") }}
+						{{ form.email(class="form-control form-control-lg") }}
 					{% endif %}
 				</div>
-				<div class="form-group pt-4">
+				<div class="form-group">
 					{{ form.picture.label() }}<br>
 					{{ form.picture(class="form-control-file pt-3") }}
 					{% if form.picture.errors %}
@@ -48,7 +48,7 @@
 					{% endif %}
 				</div>
 			</fieldset>
-			<div class="form-group pt-4 mb-3">
+			<div class="form-group">
 				{{ form.submit(class="btn btn-outline-info") }}
 			</div>
 		</form>
