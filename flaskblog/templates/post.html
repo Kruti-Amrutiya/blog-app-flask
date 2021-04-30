@@ -4,8 +4,9 @@
     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
     <div class="media-body">
       <div class="article-metadata pt-4">
-        <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
-        <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+        <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a><br>
+		<small class="text-muted">created_date {{ post.date_posted.strftime('%Y-%m-%d') }}</small><br>
+		<small class="text-muted">updated_date {{ post.updated_date }}</small>
         {% if post.author == current_user %}
           <div><br>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
@@ -50,6 +51,7 @@
       </div>
   </form>
   </div>
+  {% if post.comments %}
   <legend class="border-bottom mb-4">All Comments</legend>
   {% for comment in comments %}
   <article class="media content-section">
@@ -63,6 +65,9 @@
     </div>
   </article>
   {% endfor %}
+  {% else %}
+  <div class="border-top text-center font-weight-bold">No comments yet</div>
+  {% endif %}
   <!-- Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

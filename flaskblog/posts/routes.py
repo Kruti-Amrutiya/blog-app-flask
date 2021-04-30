@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 from flaskblog import db
 from flaskblog.models import Post, Comment
 from flaskblog.posts.forms import PostForm, AddCommentForm
+from datetime import datetime
 
 posts = Blueprint('posts', __name__)
 
@@ -48,6 +49,7 @@ def update_post(post_id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.content = form.content.data
+        post.updated_date = datetime.utcnow()
         db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('posts.post', post_id=post.id))
