@@ -62,7 +62,7 @@
         <h5 id="user-comment" class="media-body">{{ comment.body }}</h5>
         <small class="text-muted">{{ comment.created_date }}</small>
         <form action="" method="GET">
-          <a class="mr-2" href="{{ url_for('posts.delete_comment', comment_id=comment.id) }}"><i class="fa fa-trash" aria-hidden="true"></i> Remove</a>
+          <a class="mr-2" href="{{ url_for('posts.delete_comment', comment_id=comment.id) }}" onclick="if (!confirm('Are you sure you want to delete?')) { return false }"><i class="fa fa-trash" aria-hidden="true"></i> Delete</a>
         </form>
       </div>
     </div>
