@@ -83,3 +83,13 @@ def like_action(post_id, action):
         current_user.unlike_post(post)
         db.session.commit()
     return redirect(request.referrer)
+
+
+@posts.route("/post/<int:comment_id>/delete", methods=['GET','POST'])
+@login_required
+def delete_comment(comment_id):
+    comments = Comment.query.get_or_404(comment_id)
+    db.session.delete(comments)
+    db.session.commit()
+    flash('Your comment has been deleted!', 'success')
+    return redirect(request.referrer)
