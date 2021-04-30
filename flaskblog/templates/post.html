@@ -61,6 +61,9 @@
         <a class="mr-2" href="{{ url_for('users.user_posts', username=comment.user.username) }}">{{ comment.user.username }}</a>
         <h5 id="user-comment" class="media-body">{{ comment.body }}</h5>
         <small class="text-muted">{{ comment.created_date }}</small>
+        <form action="" method="GET">
+          <a class="mr-2" href="{{ url_for('posts.delete_comment', comment_id=comment.id) }}"><i class="fa fa-trash" aria-hidden="true"></i> Remove</a>
+        </form>
       </div>
     </div>
   </article>
