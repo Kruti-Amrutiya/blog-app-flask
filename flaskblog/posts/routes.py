@@ -27,7 +27,7 @@ def new_post():
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     form = AddCommentForm()
-    # post.comments.count()
+    post.comments.count()
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, article=post, user=current_user)
         db.session.add(comment)

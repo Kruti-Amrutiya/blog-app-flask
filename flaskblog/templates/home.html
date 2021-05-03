@@ -23,6 +23,7 @@
             {% endif %}
             {% endif %}
             <div class="like p-1 cursor mr-2">{{ post.likes.count() }} likes</div>
+            <div class="like p-1 cursor mr-2">{{ post.comments.count() }} comments</div>
             </div>
         </article>
     {% endfor %}

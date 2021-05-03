@@ -56,8 +56,11 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     likes = db.relationship('PostLike', backref='post', lazy='dynamic')
-    comments = db.relationship('Comment', backref='article', lazy=True)
+    comments = db.relationship('Comment', backref='article', lazy='dynamic')
     updated_date = db.Column(db.DateTime, nullable=True)
+
+    def get_comments(self):
+        return Comment.query.filter_by(post_id=post.id).order_by(Comment.timestamp.desc())
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
