@@ -1,4 +1,9 @@
 {% extends 'layout.html' %}
+{% block search %}
+<form method="GET" action="{{ url_for('main.home') }}">
+  <input type="text" placeholder="Search.." name="search_post" style="margin-top: 5px;"><button type="submit"><i class="fa fa-search"></i></button>
+ </form>
+{% endblock %}
 {% block content %}
     {% for post in posts.items %}
         <article class="media content-section">
