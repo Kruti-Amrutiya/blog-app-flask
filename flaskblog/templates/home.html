@@ -31,6 +31,8 @@
             <div class="like p-1 cursor mr-2">{{ post.comments.count() }} comments</div>
             </div>
         </article>
+        {% else %}
+        <article class="media content-section">No Results Founds!!</article>
     {% endfor %}
     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       {% if page_num %}
