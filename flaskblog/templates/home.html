@@ -1,8 +1,20 @@
 {% extends 'layout.html' %}
 {% block search %}
-<form method="GET" action="{{ url_for('main.home') }}">
+<form method="GET" action="{{ url_for('main.search_post') }}">
   <input type="text" placeholder="Search.." name="search_post" style="margin-top: 5px;"><button type="submit"><i class="fa fa-search"></i></button>
  </form>
+{% endblock %}
+{% block filter %}
+<div class="dropdown" style="padding-left: 625px;">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Filter By
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="{{ url_for('main.home', val='newest_posts') }}">Newest Posts</a>
+    <a class="dropdown-item" href="{{ url_for('main.home', val='oldest_posts') }}">Oldest Posts</a>
+    <a class="dropdown-item" href="{{ url_for('main.home', val='mostliked_posts') }}">Most Liked Posts</a>
+  </div>
+</div>
 {% endblock %}
 {% block content %}
     {% for post in posts.items %}
@@ -37,9 +49,9 @@
     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       {% if page_num %}
         {% if posts.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num, val=val) }}">{{ page_num }}</a>
         {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num, val=val) }}">{{ page_num }}</a>
         {% endif %}
       {% else %}
         ...
