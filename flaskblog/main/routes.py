@@ -7,8 +7,8 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 @main.route("/home")
-@main.route("/<string:val>", methods=['GET'])
-def home(val=None):
+def home():
+    val = request.args.get('val')
     page = request.args.get('page', 1, type=int)
     if val == 'newest_posts':
         posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)

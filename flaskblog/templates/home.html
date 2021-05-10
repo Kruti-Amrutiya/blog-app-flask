@@ -23,8 +23,8 @@
             <div class="media-body">
             <div class="article-metadata">
                 <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a><br>
-				<small class="text-muted">created_date {{ post.date_posted.strftime('%Y-%m-%d') }}</small><br>
-				<small class="text-muted">updated_date {{ post.updated_date }}</small>
+                <small class="text-muted">created_date {{ post.date_posted.strftime('%Y-%m-%d') }}</small><br>
+                <small class="text-muted">updated_date {{ post.updated_date }}</small>
             </div>
             <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content | truncate(300) }}</p>
@@ -34,9 +34,9 @@
             <div class="d-flex flex-row fs-11 mt-2">
             {% if current_user.is_authenticated %}
             {% if current_user.has_liked_post(post) %}
-              <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}"><i class="fa fa-heart"></i><span class="ml-1">Unlike</span></a>
+              <button value={{post.id}} class="button btn btn-outline-danger" action="unlike" id="unlike_button"><i class="fa fa-heart"></i><span class="ml-1">Unlike</span></button>
             {% else %}
-              <a class="like p-1 cursor" href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}"><i class="fa fa-heart-o"></i><span class="ml-1">Like</span></a>
+              <button value={{post.id}} class="button btn btn-outline-primary" action="like" id="like_button"><i class="fa fa-heart-o"></i><span class="ml-1">Like</span></button>
             {% endif %}
             {% endif %}
             <div class="like p-1 cursor mr-2">{{ post.likes.count() }} likes</div>
@@ -58,3 +58,6 @@
       {% endif %}
     {% endfor %}
 {% endblock content %}
+{% block js %}
+  <script src="{{ url_for('static', filename='ajax_likes.js') }}"></script>
+{% endblock %}
