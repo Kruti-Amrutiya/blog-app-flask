@@ -19,12 +19,12 @@ $(document).ready(function(){
                 console.log(response.action);
                 button.nextElementSibling.outerHTML = `<span class="like p-1 cursor mr-2">${response.count} likes</span>`;
                 if(response.action == 'like'){
-                    button.className = 'fa fa-heart btn btn-outline-danger';
+                    button.className = 'fa fa-heart ml-1 btn btn-outline-danger';
                     button.setAttribute('action','unlike')
                     button.innerHTML = ' Unlike';
                 }
                 else{
-                    button.className = 'fa fa-heart-o btn btn-outline-primary';
+                    button.className = 'fa fa-heart-o ml-1 btn btn-outline-primary';
                     button.setAttribute('action','like')
                     button.innerHTML = ' Like';
                 }
