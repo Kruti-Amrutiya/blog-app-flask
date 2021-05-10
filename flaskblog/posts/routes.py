@@ -1,5 +1,5 @@
 from flask import (render_template, url_for, flash,
-                   redirect, request, abort, Blueprint)
+                   redirect, request, abort, Blueprint, jsonify, json)
 from flask_login import current_user, login_required
 from flaskblog import db
 from flaskblog.models import Post, Comment
@@ -32,6 +32,7 @@ def post(post_id):
         comment = Comment(body=form.body.data, article=post, user=current_user)
         db.session.add(comment)
         db.session.commit()
+        print(post.comments)
         flash("Your comment has been added to the post", "success")
         return redirect(url_for("posts.post", post_id=post.id))
     num = post_id
@@ -71,17 +72,32 @@ def delete_post(post_id):
     return redirect(url_for('main.home'))
 
 
-@posts.route('/like/<int:post_id>/<action>')
-@login_required
-def like_action(post_id, action):
-    post = Post.query.filter_by(id=post_id).first_or_404()
-    post.likes.count()
+@posts.route('/like_unlike')
+# @login_required
+def like_action():
+
+    print('hello')
+    post_id = request.args.get('post_id')
+    post = Post.query.get(post_id)
+    print(post)
+    action = request.args.get('action')
+
     if action == 'like':
+        print('inside like ')
         current_user.like_post(post)
         db.session.commit()
+        print(post.likes.count())
+        data = {'count': post.likes.count(), 'action': 'like'}
+        return jsonify(data)
+
     if action == 'unlike':
+        print("inside unlike")
         current_user.unlike_post(post)
         db.session.commit()
+        print(post.likes.count())
+        data = {'count': post.likes.count(), 'action': 'unlike'}
+        return jsonify(data)
+
     return redirect(request.referrer)
 
 
@@ -93,12 +109,3 @@ def delete_comment(comment_id):
     db.session.commit()
     flash('Your comment has been deleted!', 'success')
     return redirect(request.referrer)
-
-
-@posts.route('/search', methods=['GET', 'POST'])
-@login_required
-def search():
-    form = SearchForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        return redirect((url_for('search_results', query=form.search.data)))
-    return render_template('search.html', form=form)
