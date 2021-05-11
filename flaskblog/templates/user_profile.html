@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <div class="media">
+        <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}" alt="Profile Image">
+        <div class="media-body">
+            <h2 class="account-heading">{{ user.username }}</h2>
+            <p class="text-secondary">{{ user.email }}</p>
+            <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+            {% if not current_user.is_following(user) %}
+                <a href="{{ url_for('users.follow', username=user.username) }}">Follow</a>
+            {% else %}
+                <a href="{{ url_for('users.unfollow', username=user.username) }}">Unfollow</a>
+            {% endif %}
+		</div>
+    </div>
+</div>
+{% endblock %}

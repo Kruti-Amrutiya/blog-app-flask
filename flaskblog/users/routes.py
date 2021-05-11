@@ -66,6 +66,12 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
+@users.route("/user_profile/<int:user_id>", methods=['GET', 'POST'])
+def user_profile(user_id=None):
+    user = User.query.get(user_id)
+    return render_template('user_profile.html', title='User Profile', user=user)
+
+
 @users.route("/profile_details")
 @login_required
 def profile_details():
@@ -112,3 +118,44 @@ def reset_token(token):
         flash('Your password has been updated! You are now able to log in', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
+
+
+@users.route('/follow/<username>')
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    print(user)
+    if user is None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+    if user == current_user:
+        flash('You can\'t follow yourself!', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    u = current_user.follow(user)
+    if u is None:
+        flash('Cannot follow ' + username + '.', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    db.session.add(u)
+    db.session.commit()
+    flash('You are now following ' + username + '!', 'success')
+    return redirect(url_for('users.user_profile', user_id=user.id))
+
+
+@users.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+    if user == current_user:
+        flash('You can\'t unfollow yourself!', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    u = current_user.unfollow(user)
+    if u is None:
+        flash('Cannot unfollow ' + username + '.', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    db.session.add(u)
+    db.session.commit()
+    flash('You have stopped following ' + username + '.', 'success')
+    return redirect(url_for('users.user_profile', user_id=user.id))

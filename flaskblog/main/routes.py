@@ -1,5 +1,5 @@
 from flask import render_template, request, Blueprint
-from flaskblog.models import Post, PostLike
+from flaskblog.models import Post, PostLike, User
 from sqlalchemy import func
 
 main = Blueprint('main', __name__)
