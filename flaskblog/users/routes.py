@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskblog import db, bcrypt
-from flaskblog.models import User, Post
+from flaskblog.models import User, Post, followers
 from flaskblog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                     RequestResetForm, ResetPasswordForm)
 from flaskblog.users.utils import save_picture, send_reset_email
@@ -66,10 +66,11 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
-@users.route("/profile_details")
+@users.route("/user_profile/<int:user_id>", methods=['GET', 'POST'])
 @login_required
-def profile_details():
-    return render_template('profile_details.html', title='Profile Details')
+def user_profile(user_id=None):
+    user = User.query.get_or_404(user_id)
+    return render_template('user_profile.html', title='User Profile', user=user)
 
 
 @users.route("/user/<string:username>")
@@ -112,3 +113,74 @@ def reset_token(token):
         flash('Your password has been updated! You are now able to log in', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
+
+
+@users.route('/follow/<username>')
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    print(user)
+    if user is None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+    if user == current_user:
+        flash('You can\'t follow yourself!', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    u = current_user.follow(user)
+    if u is None:
+        flash('Cannot follow ' + username + '.', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    db.session.add(u)
+    db.session.commit()
+    flash('You are now following ' + username + '!', 'success')
+    return redirect(url_for('users.user_profile', user_id=user.id))
+
+
+@users.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    print(user)
+    if user is None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+    if user == current_user:
+        flash('You can\'t unfollow yourself!', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    u = current_user.unfollow(user)
+    if u is None:
+        flash('Cannot unfollow ' + username + '.', 'danger')
+        return redirect(url_for('users.user_profile', user_id=user.id))
+    db.session.add(u)
+    db.session.commit()
+    flash('You have stopped following ' + username + '.', 'success')
+    return redirect(url_for('users.user_profile', user_id=user.id))
+
+
+@users.route("/userListFollowers/<username>")
+@login_required
+def listFollowers(username):    
+    user = User.query.filter_by(username=username).first_or_404()
+    user_followers = user.followers.all()
+    return render_template('user_profile.html', user_followers=user_followers, user=user)
+
+
+@users.route("/userListFollowing/<username>")
+@login_required
+def listFollowing(username):    
+    user = User.query.filter_by(username=username).first_or_404()
+    user_following = user.followed.all()
+    return render_template('user_profile.html', user_following=user_following, user=user)
+
+
+@users.route("/user_profile/<int:user_id>/delete", methods=['GET', 'POST'])
+@login_required
+def removeFollower(user_id):
+    user = User.query.filter_by(id=user_id).first_or_404()
+    print(user)
+    follow = followers.query.filter(follower_id == user.id, followed_id == current_user.id)
+    print(follow)
+    db.session.delete(follow)
+    db.session.commit()
+    flash('Your follower has been removed!', 'success')
+    return redirect(url_for('users.user_profile'))
