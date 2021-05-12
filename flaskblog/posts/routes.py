@@ -109,3 +109,11 @@ def delete_comment(comment_id):
     db.session.commit()
     flash('Your comment has been deleted!', 'success')
     return redirect(request.referrer)
+
+
+@posts.route('/followed_posts/', methods=['GET','POST'])
+@login_required
+def followed_posts():
+    page = request.args.get('page', 1, type=int)
+    posts = current_user.followed_posts().paginate(page=page, per_page=3)
+    return render_template('follow_user_posts.html', posts=posts)

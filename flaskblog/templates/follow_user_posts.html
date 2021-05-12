@@ -48,17 +48,17 @@
     {% endfor %}
     <ul class="pagination" style="padding-left: 250px;">
       <li class="page-item {% if not posts.has_prev %} disabled {% endif %} ">
-        <a class="page-link btn btn-primary mb-4" href="{{ url_for('main.home', page=posts.prev_num, val=val) }}" tabindex="-1">Prev</a>
+        <a class="page-link btn btn-primary mb-4" href="{{ url_for('posts.followed_posts', page=posts.prev_num) }}" tabindex="-1">Prev</a>
       </li>
       {% for post in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       <li class="page-item {% if post == posts.page %} active {% endif %}">
-        <a class="page-link btn btn-outline-primary mb-4" href="{{ url_for('main.home', page=post, val=val) }}">{{ post }}<span
+        <a class="page-link btn btn-outline-primary mb-4" href="{{ url_for('posts.followed_posts', page=post) }}">{{ post }}<span
             class="sr-only">(current)</span></a>
       </li>
       {% endfor %}
     
       <li class="page-item {% if not posts.has_next %} disabled {% endif %} ">
-        <a class="page-link btn btn-primary mb-4" href="{{ url_for('main.home', page=posts.next_num, val=val) }}">Next</a>
+        <a class="page-link btn btn-primary mb-4" href="{{ url_for('posts.followed_posts', page=posts.next_num) }}">Next</a>
       </li>
     </ul>
 {% endblock content %}
