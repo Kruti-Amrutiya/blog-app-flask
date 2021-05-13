@@ -1,21 +1,4 @@
 {% extends 'layout.html' %}
-{% block search %}
-<form method="GET" action="{{ url_for('main.search_post') }}">
-  <input type="text" placeholder="Search.." name="search_post" style="margin-top: 5px;"><button type="submit"><i class="fa fa-search"></i></button>
- </form>
-{% endblock %}
-{% block filter %}
-<div class="dropdown" style="padding-left: 625px;">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Filter By
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="{{ url_for('main.home', val='newest_posts') }}">Newest Posts</a>
-    <a class="dropdown-item" href="{{ url_for('main.home', val='oldest_posts') }}">Oldest Posts</a>
-    <a class="dropdown-item" href="{{ url_for('main.home', val='mostliked_posts') }}">Most Liked Posts</a>
-  </div>
-</div>
-{% endblock %}
 {% block content %}
     {% for post in posts.items %}
         <article class="media content-section">

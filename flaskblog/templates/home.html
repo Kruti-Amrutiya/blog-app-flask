@@ -50,7 +50,7 @@
       <li class="page-item {% if not posts.has_prev %} disabled {% endif %} ">
         <a class="page-link btn btn-primary mb-4" href="{{ url_for('main.home', page=posts.prev_num, val=val) }}" tabindex="-1">Prev</a>
       </li>
-      {% for post in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% for post in posts.iter_pages() %}
       <li class="page-item {% if post == posts.page %} active {% endif %}">
         <a class="page-link btn btn-outline-primary mb-4" href="{{ url_for('main.home', page=post, val=val) }}">{{ post }}<span
             class="sr-only">(current)</span></a>

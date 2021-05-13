@@ -159,18 +159,18 @@ def unfollow(username):
 
 @users.route("/userListFollowers/<username>")
 @login_required
-def listFollowers(username):    
+def listFollowers(username):
     user = User.query.filter_by(username=username).first_or_404()
     user_followers = user.followers.all()
-    return render_template('user_profile.html', user_followers=user_followers, user=user)
+    return render_template('user_profile.html', user_followers=user_followers, user=user, user_id=user.id)
 
 
 @users.route("/userListFollowing/<username>")
 @login_required
-def listFollowing(username):    
+def listFollowing(username):
     user = User.query.filter_by(username=username).first_or_404()
     user_following = user.followed.all()
-    return render_template('user_profile.html', user_following=user_following, user=user)
+    return render_template('user_profile.html', user_following=user_following, user=user, user_id=user.id)
 
 
 @users.route("/user_profile/<int:user_id>/delete", methods=['GET', 'POST'])
@@ -178,9 +178,12 @@ def listFollowing(username):
 def removeFollower(user_id):
     user = User.query.filter_by(id=user_id).first_or_404()
     print(user)
-    follow = followers.query.filter(follower_id == user.id, followed_id == current_user.id)
-    print(follow)
-    db.session.delete(follow)
+    follow = db.session.query(User).get(1)
+    follow.followers.remove()
     db.session.commit()
+    # follow = followers.query.filter(follower_id == user.id, followed_id == current_user.id)
+    print(follow)
+    # db.session.delete(follow)
+    # db.session.commit()
     flash('Your follower has been removed!', 'success')
     return redirect(url_for('users.user_profile'))

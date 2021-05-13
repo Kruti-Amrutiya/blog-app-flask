@@ -49,21 +49,23 @@
                 <th scope="col" style="margin-right: 5px;">Action</th>
             </tr>
         </thead>
-        {% for users in user_following %}
         <tbody>
+        {% for users in user_following %}
+
             <tr>
                 <td>
                     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + users.image_file) }}" alt="Profile Image">
                     <a class="mr-2" href="{{ url_for('users.user_profile', user_id=users.id) }}">{{ users.username }}</a>
                 </td>
                 <td>
-                    <form action="{{ url_for('users.unfollow', username=users.username) }}" method="GET">
-                        <button class="btn btn-outline-primary" onclick="if (!confirm('Are you sure you want to unfollow?')) { return false }">Unfollow</button>
-                    </form>
+                    <div class="d-flex flex-row align-items-center mt-2">
+                        <a class="btn btn-outline-primary" href="{{ url_for('users.unfollow', username=users.username) }}" onclick="if (!confirm('Are you sure you want to unfollow?')) { return false }">Unfollow</a>
+                    </div>    
                 </td>
             </tr>
+            {% endfor %}
         </tbody>
-        {% endfor %}
+        
     </table>
 </div>
 {% endif %}
