@@ -1,10 +1,11 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from flask import app, render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskblog import db, bcrypt
-from flaskblog.models import User, Post, followers
+from flaskblog.models import User, Post
 from flaskblog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                     RequestResetForm, ResetPasswordForm)
-from flaskblog.users.utils import save_picture, send_reset_email
+from flaskblog.users.utils import save_picture
+from flaskblog.tasks import send_reset_email, reverse
 
 users = Blueprint('users', __name__)
 
@@ -84,6 +85,12 @@ def user_posts(username):
     return render_template('user_posts.html', posts=posts, user=user)
 
 
+@users.route("/process/<name>", methods=['GET', 'POST'])
+def process(name):
+    reverse.delay(name)
+    return 'hello'
+
+
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
@@ -91,7 +98,8 @@ def reset_request():
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        send_reset_email(user)
+        user_email = user.email
+        send_reset_email.delay(user_email)
         flash('An email has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('users.login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
@@ -175,15 +183,11 @@ def listFollowing(username):
 
 @users.route("/user_profile/<int:user_id>/delete", methods=['GET', 'POST'])
 @login_required
-def removeFollower(user_id):
-    user = User.query.filter_by(id=user_id).first_or_404()
+def removeFollower(user_id=None):
+    user = User.query.get(user_id)
     print(user)
-    follow = db.session.query(User).get(1)
-    follow.followers.remove()
+    unfollow = user.unfollow(current_user)
+    db.session.add(unfollow)
     db.session.commit()
-    # follow = followers.query.filter(follower_id == user.id, followed_id == current_user.id)
-    print(follow)
-    # db.session.delete(follow)
-    # db.session.commit()
     flash('Your follower has been removed!', 'success')
-    return redirect(url_for('users.user_profile'))
+    return redirect(request.referrer)
