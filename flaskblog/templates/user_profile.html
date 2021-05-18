@@ -50,8 +50,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for users in user_following %}
-
+            {% for users in user_following %}
             <tr>
                 <td>
                     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + users.image_file) }}" alt="Profile Image">
