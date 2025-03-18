@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if user == current_user %}
+<div class="content-section">
+    <div class="media">
+        <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}" alt="Profile Image">
+        <div class="media-body">
+            <h2 class="account-heading">{{ current_user.username }}</h2>
+            <p class="text-secondary">{{ current_user.email }}</p>
+            <a class="mr-2" href="{{ url_for('users.listFollowers', username=user.username)}}">{{ user.followers.count() }} followers</a>, <a class="mr-2" href="{{ url_for('users.listFollowing', username=user.username)}}">{{ user.followed.count() }} following.</a><br><br>
+            <a href="{{ url_for('users.account') }}" class="btn btn-outline-info">Edit Profile</a>
+		</div>
+    </div>
+</div>
+{% if user_followers %}
+<legend class="border-bottom mb-4">Followers</legend>
+<div class="table-responsive-md">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col" style="margin-right: 5px;">Action</th>
+            </tr>
+        </thead>
+        {% for users in user_followers %}
+        <tbody>
+            <tr>
+                <td>
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + users.image_file) }}" alt="Profile Image">
+                    <a class="mr-2" href="{{ url_for('users.user_profile', user_id=users.id) }}">{{ users.username }}</a>
+                </td>
+                <td>
+                    <form action="{{ url_for('users.removeFollower', user_id=users.id) }}" method="GET">
+                        <button class="btn btn-outline-danger" onclick="if (!confirm('Are you sure you want to remove this follower?')) { return false }">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+{% elif user_following %}
+<legend class="border-bottom mb-4">Following</legend>
+<div class="table-responsive-md">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col" style="margin-right: 5px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for users in user_following %}
+            <tr>
+                <td>
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + users.image_file) }}" alt="Profile Image">
+                    <a class="mr-2" href="{{ url_for('users.user_profile', user_id=users.id) }}">{{ users.username }}</a>
+                </td>
+                <td>
+                    <div class="d-flex flex-row align-items-center mt-2">
+                        <a class="btn btn-outline-primary" href="{{ url_for('users.unfollow', username=users.username) }}" onclick="if (!confirm('Are you sure you want to unfollow?')) { return false }">Unfollow</a>
+                    </div>    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+</div>
+{% endif %}
+{% else %}
+<div class="content-section">
+    <div class="media">
+        <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}" alt="Profile Image">
+        <div class="media-body">
+            <h2 class="account-heading">{{ user.username }}</h2>
+            <p class="text-secondary">{{ user.email }}</p>
+            <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+            {% if not current_user.is_following(user) %}
+                <a href="{{ url_for('users.follow', username=user.username) }}">Follow</a>
+            {% else %}
+                <a href="{{ url_for('users.unfollow', username=user.username) }}">Unfollow</a>
+            {% endif %}
+		</div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
